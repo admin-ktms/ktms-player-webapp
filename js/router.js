@@ -6,9 +6,54 @@ import {
 const routes = new Map();
 
 
-let renderFunction =
-  null;
+let renderFunction = null;
 
+
+/* ========================================================
+ * PATH NORMALIZATION
+ * ====================================================== */
+
+function normalizePath(path) {
+
+  if (!path) {
+    return "/";
+  }
+
+
+  let normalized =
+    String(path)
+      .split("?")[0]
+      .split("#")[0]
+      .replace(/\/+/g, "/");
+
+
+  if (
+    normalized.length > 1 &&
+    normalized.endsWith("/")
+  ) {
+
+    normalized =
+      normalized.slice(0, -1);
+
+  }
+
+
+  if (!normalized.startsWith("/")) {
+
+    normalized =
+      "/" + normalized;
+
+  }
+
+
+  return normalized || "/";
+
+}
+
+
+/* ========================================================
+ * ROUTE REGISTRATION
+ * ====================================================== */
 
 export function registerRoute(
   path,
@@ -16,17 +61,27 @@ export function registerRoute(
   options = {}
 ) {
 
+  const normalized =
+    normalizePath(path);
+
+
   routes.set(
-    path,
+    normalized,
     {
       handler,
       requiresAuth:
-        options.requiresAuth === true
+        options.requiresAuth === true,
+      meta:
+        options.meta || {}
     }
   );
 
 }
 
+
+/* ========================================================
+ * CURRENT PATH
+ * ====================================================== */
 
 export function getCurrentPath() {
 
@@ -37,45 +92,143 @@ export function getCurrentPath() {
 }
 
 
-function normalizePath(
-  path
-) {
+/* ========================================================
+ * ROUTE MATCHING
+ * ====================================================== */
 
-  if (!path) {
-    return "/";
-  }
-
-
-  const normalized =
-    path
-      .replace(/\/+/g, "/")
-      .replace(
-        /\/$/,
-        ""
-      );
-
-
-  return normalized || "/";
-
-}
-
-
-function findRoute(
-  path
-) {
+function findRoute(path) {
 
   const normalized =
     normalizePath(path);
 
+
+  /*
+   * Exact route first.
+   */
 
   if (
     routes.has(normalized)
   ) {
 
     return {
+
       path: normalized,
-      route: routes.get(normalized)
+
+      params: {},
+
+      route:
+        routes.get(normalized)
+
     };
+
+  }
+
+
+  /*
+   * Parameterized route support.
+   *
+   * Example:
+   *
+   * /tournament/:tournamentId
+   *
+   * This does NOT invent or validate the
+   * Tournament_ID. The authoritative ID is
+   * resolved later through KTMS.
+   */
+
+  for (
+    const [
+      routePath,
+      route
+    ] of routes.entries()
+  ) {
+
+    const routeSegments =
+      routePath
+        .split("/")
+        .filter(Boolean);
+
+
+    const pathSegments =
+      normalized
+        .split("/")
+        .filter(Boolean);
+
+
+    if (
+      routeSegments.length !==
+      pathSegments.length
+    ) {
+
+      continue;
+
+    }
+
+
+    const params = {};
+
+    let matches = true;
+
+
+    for (
+      let index = 0;
+      index < routeSegments.length;
+      index++
+    ) {
+
+      const routeSegment =
+        routeSegments[index];
+
+      const pathSegment =
+        pathSegments[index];
+
+
+      if (
+        routeSegment.startsWith(":")
+      ) {
+
+        const parameterName =
+          routeSegment.slice(1);
+
+
+        params[parameterName] =
+          decodeURIComponent(
+            pathSegment
+          );
+
+
+        continue;
+
+      }
+
+
+      if (
+        routeSegment !==
+        pathSegment
+      ) {
+
+        matches = false;
+
+        break;
+
+      }
+
+    }
+
+
+    if (matches) {
+
+      return {
+
+        path: normalized,
+
+        params,
+
+        route
+
+      };
+
+    }
 
   }
 
@@ -84,6 +237,10 @@ function findRoute(
 
 }
 
+
+/* ========================================================
+ * RENDERER
+ * ====================================================== */
 
 export function setRenderer(
   renderer
@@ -95,6 +252,10 @@ export function setRenderer(
 }
 
 
+/* ========================================================
+ * NAVIGATION
+ * ====================================================== */
+
 export async function navigate(
   path,
   options = {}
@@ -102,6 +263,22 @@ export async function navigate(
 
   const normalized =
     normalizePath(path);
+
+
+  const currentPath =
+    getCurrentPath();
+
+
+  if (
+    normalized === currentPath &&
+    options.force !== true
+  ) {
+
+    await renderCurrentRoute();
+
+    return;
+
+  }
 
 
   if (
@@ -130,6 +307,10 @@ export async function navigate(
 }
 
 
+/* ========================================================
+ * RENDER CURRENT ROUTE
+ * ====================================================== */
+
 export async function renderCurrentRoute() {
 
   const path =
@@ -156,6 +337,10 @@ export async function renderCurrentRoute() {
 }
 
 
+/* ========================================================
+ * ROUTER STARTUP
+ * ====================================================== */
+
 export function startRouter() {
 
   document.addEventListener(
@@ -173,16 +358,51 @@ export function startRouter() {
       }
 
 
+      /*
+       * Respect modified clicks.
+       *
+       * Ctrl/Cmd-click,
+       * middle-click, etc.
+       * should retain normal browser behavior.
+       */
+
+      if (
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.button !== 0
+      ) {
+
+        return;
+
+      }
+
+
       const href =
         link.getAttribute("href");
 
 
-      if (
-        !href ||
-        href.startsWith("#") ||
-        href.startsWith("http")
-      ) {
+      if (!href) {
         return;
+      }
+
+
+      /*
+       * Only intercept internal
+       * application routes.
+       */
+
+      if (
+        href.startsWith("#") ||
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:")
+      ) {
+
+        return;
+
       }
 
 

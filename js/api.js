@@ -1,16 +1,16 @@
-const API_VERSION = "v1";
+const API_VERSION =
+  "v1";
+
 
 /*
  * IMPORTANT:
  *
- * Replace this placeholder only with the deployed
- * KTMS API endpoint when the browser/API transport
- * has been validated.
+ * This is the deployed KTMS Public API Web App URL.
  *
- * Never place KTMS_API_KEY here.
+ * Do NOT place KTMS_API_KEY here.
  */
 const API_BASE_URL =
-  "REPLACE_WITH_KTMS_API_WEB_APP_URL";
+  "https://api.kickoffdls.com/";
 
 
 export class ApiError extends Error {
@@ -23,9 +23,14 @@ export class ApiError extends Error {
 
     super(message);
 
-    this.name = "ApiError";
-    this.code = code;
-    this.response = response;
+    this.name =
+      "ApiError";
+
+    this.code =
+      code;
+
+    this.response =
+      response;
 
   }
 
@@ -39,34 +44,51 @@ async function request(
 ) {
 
   const body = {
+
     endpoint,
+
     ...payload
+
   };
 
 
-  const response = await fetch(
-    API_BASE_URL,
-    {
-      method: "POST",
+  const response =
+    await fetch(
+      API_BASE_URL,
+      {
 
-      headers: {
-        "Content-Type": "application/json"
-      },
+        method:
+          "POST",
 
-      credentials: "include",
+        headers: {
 
-      body: JSON.stringify(body),
+          "Content-Type":
+            "application/json"
 
-      signal: options.signal
-    }
-  );
+        },
+
+        credentials:
+          "include",
+
+        body:
+          JSON.stringify(
+            body
+          ),
+
+        signal:
+          options.signal
+
+      }
+    );
 
 
   let data;
 
+
   try {
 
-    data = await response.json();
+    data =
+      await response.json();
 
   } catch (error) {
 
@@ -78,7 +100,11 @@ async function request(
   }
 
 
-  if (!data || data.apiVersion !== API_VERSION) {
+  if (
+    !data ||
+    data.apiVersion !==
+      API_VERSION
+  ) {
 
     throw new ApiError(
       "KTMS returned an unsupported API version.",
@@ -89,14 +115,20 @@ async function request(
   }
 
 
-  if (!response.ok || data.success !== true) {
+  if (
+    !response.ok ||
+    data.success !== true
+  ) {
 
     throw new ApiError(
       data?.error?.message ||
         "The KTMS request could not be completed.",
+
       data?.error?.code ||
         "API_REQUEST_FAILED",
+
       data
+
     );
 
   }
@@ -107,84 +139,121 @@ async function request(
 }
 
 
-export const api = Object.freeze({
+/* ==========================================================
+ * PUBLIC API
+ * ======================================================== */
 
-  async getOpenTournaments() {
+async function getOpenTournaments() {
 
-    return request(
-      "tournaments/open"
-    );
+  return request(
+    "tournaments/open"
+  );
 
-  },
+}
 
 
-  async requestAccountVerification(
+/* ==========================================================
+ * ACCOUNT
+ * ======================================================== */
+
+async function requestAccountVerification(
+  payload
+) {
+
+  return request(
+    "account/verification/request",
     payload
-  ) {
+  );
 
-    return request(
-      "account/verification/request",
-      payload
-    );
-
-  },
+}
 
 
-  async requestLoginCode(
-    accountId
-  ) {
+/* ==========================================================
+ * AUTHENTICATION
+ * ======================================================== */
 
-    return request(
-      "auth/otp/request",
-      {
-        accountId
-      }
-    );
+async function requestLoginCode(
+  accountId
+) {
 
-  },
+  return request(
+    "auth/otp/request",
+    {
+      accountId
+    }
+  );
 
-
-  async verifyOtp(
-    challengeId,
-    otp
-  ) {
-
-    return request(
-      "auth/otp/verify",
-      {
-        challengeId,
-        otp
-      }
-    );
-
-  },
+}
 
 
-  async validateSession(
-    sessionToken
-  ) {
+async function verifyOtp(
+  challengeId,
+  otp
+) {
 
-    return request(
-      "auth/session/validate",
-      {
-        sessionToken
-      }
-    );
+  return request(
+    "auth/otp/verify",
+    {
 
-  },
+      challengeId,
+
+      otp
+
+    }
+  );
+
+}
 
 
-  async logout(
-    sessionToken
-  ) {
+async function validateSession(
+  sessionToken
+) {
 
-    return request(
-      "auth/logout",
-      {
-        sessionToken
-      }
-    );
+  return request(
+    "auth/session/validate",
+    {
 
-  }
+      sessionToken
 
-});
+    }
+  );
+
+}
+
+
+async function logout(
+  sessionToken
+) {
+
+  return request(
+    "auth/logout",
+    {
+
+      sessionToken
+
+    }
+  );
+
+}
+
+
+/* ==========================================================
+ * EXPORT
+ * ======================================================== */
+
+export const api =
+  Object.freeze({
+
+    getOpenTournaments,
+
+    requestAccountVerification,
+
+    requestLoginCode,
+
+    verifyOtp,
+
+    validateSession,
+
+    logout
+
+  });
