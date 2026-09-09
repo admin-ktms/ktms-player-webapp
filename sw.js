@@ -1,6 +1,4 @@
-const CACHE_NAME =
-  "ktms-shell-v1";
-
+const CACHE_NAME = "ktms-shell-v1";
 
 const SHELL_ASSETS = [
   "/",
@@ -12,8 +10,7 @@ const SHELL_ASSETS = [
   "/js/api.js",
   "/js/auth.js",
   "/js/state.js",
-  "/js/ui.js",
-  "/manifest.webmanifest"
+  "/js/ui.js"
 ];
 
 
@@ -63,6 +60,7 @@ self.addEventListener(
                     )
                 )
             )
+
         )
 
     );
@@ -81,19 +79,10 @@ self.addEventListener(
       event.request;
 
 
-    /*
-     * Do not intercept API POST requests.
-     *
-     * KTMS business data must remain
-     * server-authoritative.
-     */
-
     if (
       request.method !== "GET"
     ) {
-
       return;
-
     }
 
 
@@ -103,18 +92,11 @@ self.addEventListener(
       );
 
 
-    /*
-     * Only cache requests belonging
-     * to this Player Web App.
-     */
-
     if (
       url.origin !==
       self.location.origin
     ) {
-
       return;
-
     }
 
 
