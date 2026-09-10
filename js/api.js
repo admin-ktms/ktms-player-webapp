@@ -7,7 +7,7 @@ const API_VERSION =
  *
  * This is the deployed KTMS Public API Web App URL.
  *
- * Do NOT place KTMS_API_KEY here.
+ * Do NOT place KTMS_API_KEY here. 
  */
 const API_BASE_URL =
   "https://api.kickoffdls.com/";
