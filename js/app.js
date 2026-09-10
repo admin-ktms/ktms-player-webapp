@@ -6,6 +6,10 @@ import {
 } from "./router.js";
 
 import {
+  api
+} from "./api.js";
+
+import {
   validateSession,
   isAuthenticated,
   logout,
@@ -136,9 +140,7 @@ function renderTournaments() {
         </h1>
 
         <p class="page-description">
-          Available tournament discovery will
-          be connected to the public KTMS API
-          during the read-only portal phase.
+          Currently available KickOff tournaments.
         </p>
 
       </header>
@@ -159,7 +161,149 @@ function renderTournaments() {
 
   `;
 
+
+  const tournamentList =
+    document.getElementById(
+      "tournament-list"
+    );
+
+
+  if (!tournamentList) {
+    return;
+  }
+
+
+  api.getOpenTournaments()
+    .then(
+      data => {
+
+        const tournaments =
+          Array.isArray(
+            data?.tournaments
+          )
+            ? data.tournaments
+            : [];
+
+
+        if (
+          tournaments.length === 0
+        ) {
+
+          tournamentList.innerHTML = `
+            <section
+              class="empty-state"
+              aria-live="polite"
+            >
+              <h2 class="card-title">
+                No active tournaments
+              </h2>
+
+              <p class="card-text">
+                There are currently no tournaments
+                open for registration.
+              </p>
+            </section>
+          `;
+
+          return;
+        }
+
+
+        tournamentList.innerHTML =
+          tournaments
+            .map(
+              tournament => `
+
+                <article
+                  class="tournament-card"
+                >
+
+                  <div
+                    class="tournament-card-header"
+                  >
+
+                    <span
+                      class="status-pill status-pill-primary"
+                    >
+                      ${tournament.status}
+                    </span>
+
+                    <h2
+                      class="card-title"
+                    >
+                      ${tournament.name}
+                    </h2>
+
+                  </div>
+
+
+                  <div
+                    class="tournament-card-details"
+                  >
+
+                    <p class="card-text">
+                      Tournament ID:
+                      ${tournament.tournamentId}
+                    </p>
+
+                    <p class="card-text">
+                      Type:
+                      ${tournament.typeId}
+                    </p>
+
+                    <p class="card-text">
+                      Registration closes:
+                      ${tournament.registrationEnd || "Not specified"}
+                    </p>
+
+                    <p class="card-text">
+                      Tournament dates:
+                      ${tournament.startDate || "Not specified"}
+                      –
+                      ${tournament.endDate || "Not specified"}
+                    </p>
+
+                  </div>
+
+
+                  <div
+                    class="tournament-card-actions"
+                  >
+                    <span
+                      class="card-text"
+                    >
+                      Tournament portal coming next.
+                    </span>
+                  </div>>
+
+                </article>
+
+              `
+            )
+            .join("");
+
+      }
+    )
+    .catch(
+      error => {
+
+        console.error(
+          "KTMS tournament discovery error:",
+          error
+        );
+
+
+        tournamentList.innerHTML =
+          renderError(
+            error?.message ||
+            "Unable to load tournaments right now."
+          );
+
+      }
+    );
+
 }
+
 
 function getReturnPath() {
 
