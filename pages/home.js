@@ -1,197 +1,305 @@
-
 import { api } from "../js/api.js";
-
-import {
-  setPage,
-  escapeHtml
-} from "../js/ui.js";
-
-import {
-  tournamentCard,
-  bindTournamentCards
-} from "../components/tournament-card.js";
-
-import {
-  getState,
-  setState
-} from "../js/state.js";
-
+import { renderTournamentCard } from "../components/tournament-card.js";
 
 export async function renderHome() {
+  const app = document.querySelector("#app");
 
-  setPage(`
-    <main class="page">
+  app.innerHTML = `
+    <div class="app-shell">
 
-      <section class="hero">
+      <header class="app-header">
+        <div class="app-header-inner">
 
-        <div class="hero-content">
+          <a
+            href="/"
+            class="brand"
+            data-route="/"
+          >
+            <span class="brand-mark">KD</span>
 
-          <span class="eyebrow">
-            KICKOFF TOURNAMENT MANAGEMENT SYSTEM
-          </span>
+            <span>
+              <span class="brand-text">
+                KickOff DLS
+              </span>
 
-          <h1>
-            Play the tournament.
-          </h1>
+              <span class="brand-subtitle">
+                Competitive Football
+              </span>
+            </span>
+          </a>
 
-          <p>
-            Discover active KTMS tournaments,
-            register your squad and follow your
-            competition from matchday to completion.
-          </p>
-
-          <div class="hero-actions">
-
+          <nav>
             <a
               href="/login"
-              class="button button-secondary"
-              data-route-link
+              class="btn btn-secondary"
+              data-route="/login"
             >
-              LOGIN
+              Login
             </a>
+          </nav>
+
+        </div>
+      </header>
+
+      <main class="app-main">
+
+        <section class="hero">
+
+          <div class="hero-content">
+
+            <div class="eyebrow">
+              KickOff DLS
+            </div>
+
+            <h1 class="hero-title">
+              The competition
+              <br>
+              <span>is on.</span>
+            </h1>
+
+            <p class="page-lead">
+              Find your next tournament, enter your squad,
+              and compete in structured Dream League Soccer
+              competition built for players looking for more.
+            </p>
+
+            <div class="hero-actions">
+
+              <a
+                href="#active-tournaments"
+                class="btn btn-primary"
+              >
+                Explore Tournaments
+              </a>
+
+              <a
+                href="/login"
+                class="btn btn-secondary"
+                data-route="/login"
+              >
+                Player Login
+              </a>
+
+            </div>
 
           </div>
 
-        </div>
+        </section>
 
-      </section>
-
-
-      <section class="tournament-section">
-
-        <div class="section-heading">
-
-          <div>
-            <span class="eyebrow">
-              ACTIVE TOURNAMENTS
-            </span>
-
-            <h2>
-              Enter the competition
-            </h2>
-          </div>
-
-        </div>
-
-
-        <div
-          id="tournament-list"
-          class="tournament-grid"
+        <section
+          id="active-tournaments"
+          class="page-section"
         >
 
-          <div class="loading-card">
-            Loading active tournaments...
+          <div class="section-header">
+
+            <div>
+              <div class="eyebrow">
+                Competition
+              </div>
+
+              <h2 class="section-title">
+                Active Tournaments
+              </h2>
+            </div>
+
           </div>
+
+          <div id="tournament-list">
+            <div class="loading-state">
+              Loading competitions...
+            </div>
+          </div>
+
+        </section>
+
+        <section class="page-section">
+
+          <div class="section-header">
+            <div>
+              <div class="eyebrow">
+                Why KickOff DLS
+              </div>
+
+              <h2 class="section-title">
+                Built for competition
+              </h2>
+            </div>
+          </div>
+
+          <div class="competition-strip">
+
+            <div class="competition-strip-item">
+              <span class="competition-strip-label">
+                Compete
+              </span>
+
+              <span class="competition-strip-value">
+                Structured tournaments
+              </span>
+            </div>
+
+            <div class="competition-strip-item">
+              <span class="competition-strip-label">
+                Follow
+              </span>
+
+              <span class="competition-strip-value">
+                Fixtures & results
+              </span>
+            </div>
+
+            <div class="competition-strip-item">
+              <span class="competition-strip-label">
+                Prove
+              </span>
+
+              <span class="competition-strip-value">
+                Rankings & recognition
+              </span>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <footer class="app-footer">
+        <div class="app-footer-inner">
+
+          <span>
+            KickOff DLS
+          </span>
+
+          <span>
+            Powered by KTMS
+          </span>
 
         </div>
+      </footer>
 
-      </section>
+    </div>
+  `;
 
-    </main>
-  `);
+  await loadTournaments();
+}
 
-
+async function loadTournaments() {
   const container =
-    document.querySelector(
-      "#tournament-list"
-    );
-
+    document.querySelector("#tournament-list");
 
   try {
-
-    const result =
-      await api.getTournaments();
+    const response = await api(
+      "tournaments.list",
+      {}
+    );
 
     const tournaments =
-      Array.isArray(result)
-        ? result
-        : (
-            result?.tournaments ||
-            result?.items ||
-            []
-          );
-
-
-    setState({
-      tournaments
-    });
-
+      extractTournaments(response);
 
     if (!tournaments.length) {
-
       container.innerHTML = `
-        <div class="state-card">
-          <div class="state-icon">
-            KT
-          </div>
-
-          <h3>
-            No active tournaments
-          </h3>
-
+        <div class="empty-state">
+          <strong>No active competitions.</strong>
           <p>
-            There are currently no tournaments
-            available for registration.
+            There are currently no tournaments available
+            for registration.
           </p>
         </div>
       `;
 
       return;
-
     }
 
-
-    container.innerHTML =
-      tournaments
-        .map(
-          tournamentCard
-        )
-        .join("");
-
-
-    bindTournamentCards();
-
-
-  } catch (error) {
-
     container.innerHTML = `
-      <div class="state-card">
-
-        <div class="state-icon">
-          !
-        </div>
-
-        <h3>
-          Tournaments unavailable
-        </h3>
-
-        <p>
-          ${escapeHtml(
-            error.message ||
-            "Unable to load tournaments."
-          )}
-        </p>
-
-        <button
-          class="button button-primary"
-          id="retry-tournaments"
-        >
-          RETRY
-        </button>
-
+      <div class="tournament-grid">
+        ${tournaments
+          .map(renderTournamentCard)
+          .join("")}
       </div>
     `;
 
+    bindTournamentActions();
+
+  } catch (error) {
+    console.error(
+      "Failed to load tournaments:",
+      error
+    );
+
+    container.innerHTML = `
+      <div class="error-state">
+        <strong>
+          Competition data unavailable.
+        </strong>
+
+        <p>
+          We could not load the current tournaments.
+          Please try again.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          id="retry-tournaments"
+          style="margin-top:16px;"
+        >
+          Retry
+        </button>
+      </div>
+    `;
 
     document
-      .querySelector(
-        "#retry-tournaments"
-      )
+      .querySelector("#retry-tournaments")
       ?.addEventListener(
         "click",
-        () => renderHome()
+        loadTournaments
       );
+  }
+}
 
+function bindTournamentActions() {
+  document
+    .querySelectorAll(
+      '[data-action="open-tournament"]'
+    )
+    .forEach((button) => {
+      button.addEventListener(
+        "click",
+        () => {
+          const tournamentId =
+            button.dataset.tournamentId;
+
+          if (!tournamentId) {
+            return;
+          }
+
+          window.location.href =
+            `/tournament?id=${encodeURIComponent(
+              tournamentId
+            )}`;
+        }
+      );
+    });
+}
+
+function extractTournaments(response) {
+  if (Array.isArray(response)) {
+    return response;
   }
 
+  if (Array.isArray(response?.data)) {
+    return response.data;
+  }
+
+  if (Array.isArray(response?.tournaments)) {
+    return response.tournaments;
+  }
+
+  if (Array.isArray(response?.data?.tournaments)) {
+    return response.data.tournaments;
+  }
+
+  return [];
 }
