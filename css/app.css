@@ -378,17 +378,26 @@ img {
 }
 
 .hero-title {
+  position: relative;
+
   margin: 14px 0 18px;
+
+  max-width: 850px;
 
   font-size: clamp(46px, 9vw, 88px);
   line-height: 0.88;
+
   letter-spacing: -0.055em;
   font-weight: 950;
+
   text-transform: uppercase;
 }
 
 .hero-title span {
   color: var(--ktms-primary);
+
+  text-shadow:
+    0 0 28px rgba(0, 217, 255, 0.16);
 }
 
 .hero-actions {
