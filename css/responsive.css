@@ -1,73 +1,119 @@
-
-@media (
-  max-width: 600px
-) {
-
-  .page {
-
-    width:
-      min(
-        100% - 20px,
-        var(--content-width)
-      );
-
-    padding-top:
-      20px;
-
+@media (max-width: 720px) {
+  .app-header {
+    height: 60px;
   }
 
-
-  .hero-content {
-
-    width:
-      min(
-        100% - 20px,
-        var(--content-width)
-      );
-
-    padding:
-      52px 0 40px;
-
+  .app-header-inner,
+  .app-main,
+  .app-footer-inner {
+    width: min(
+      calc(100% - 24px),
+      var(--ktms-max-width)
+    );
   }
 
-
-  .tournament-section {
-
-    width:
-      min(
-        100% - 20px,
-        var(--content-width)
-      );
-
-    padding-top:
-      32px;
-
+  .app-main {
+    padding-top: 28px;
+    padding-bottom: 52px;
   }
 
-
-  .tournament-grid {
-
-    grid-template-columns:
-      1fr;
-
+  .brand-text {
+    font-size: 13px;
   }
 
-
-  .detail-grid {
-
-    grid-template-columns:
-      1fr;
-
+  .hero {
+    min-height: 430px;
   }
 
-
-  .auth-card,
-  .state-card,
-  .tournament-detail {
-
-    padding:
-      20px;
-
+  .hero-title {
+    font-size: clamp(44px, 15vw, 68px);
   }
 
+  .hero-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+  }
+
+  .page-title {
+    font-size: 42px;
+  }
+
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-title {
+    font-size: 21px;
+  }
+
+  .tournament-card-inner {
+    padding: 18px;
+  }
+
+  .tournament-card-top {
+    margin-bottom: 25px;
+  }
+
+  .tournament-name {
+    font-size: 27px;
+  }
+
+  .tournament-meta {
+    gap: 16px;
+  }
+
+  .tournament-meta-value {
+    font-size: 13px;
+  }
+
+  .tournament-card-action {
+    min-height: 50px;
+  }
+
+  .tournament-hero {
+    padding: 28px 0;
+  }
+
+  .tournament-hero-title {
+    font-size: clamp(38px, 13vw, 60px);
+  }
+
+  .tournament-nav-link {
+    padding: 15px 14px;
+  }
+
+  .tournament-nav-link.active::after {
+    left: 14px;
+    right: 14px;
+  }
+
+  .auth-shell {
+    margin: 28px auto;
+  }
+
+  .auth-card {
+    padding: 22px 18px;
+  }
+
+  .app-footer-inner {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 721px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .desktop-only {
+    display: none !important;
+  }
 }
