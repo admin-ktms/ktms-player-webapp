@@ -1,162 +1,253 @@
-
-import {
-  escapeHtml,
-  formatDate,
-  formatCurrency
-} from "../js/ui.js";
-
-import {
-  navigate
-} from "../js/router.js";
-
-
-export function tournamentCard(
-  tournament
-) {
-
+export function renderTournamentCard(tournament) {
   const id =
-    tournament.tournament_id;
+    tournament?.tournament_id ||
+    tournament?.Tournament_ID ||
+    "—";
 
   const name =
-    tournament.tournament_name ||
-    "KT Tournament";
+    tournament?.tournament_name ||
+    tournament?.Tournament_Name ||
+    "KickOff Tournament";
 
   const status =
-    tournament.tournament_status ||
+    tournament?.tournament_status ||
+    tournament?.Tournament_Status ||
     "Upcoming";
 
-  const maximum =
-    Number(
-      tournament.maximum_players || 0
-    );
+  const startDate =
+    tournament?.tournament_start_date ||
+    tournament?.Tournament_Start_Date;
 
+  const registrationClose =
+    tournament?.registration_close_datetime ||
+    tournament?.Registration_Close_DateTime;
+
+  const fee =
+    tournament?.registration_fee ??
+    tournament?.Registration_Fee ??
+    0;
+
+  const capacity =
+    tournament?.maximum_players ??
+    tournament?.Maximum_Players ??
+    "—";
+
+  const edition = extractEdition(name);
+
+  const statusClass = getStatusClass(status);
+
+  const statusLabel = formatStatus(status);
+
+  const startLabel = formatDate(startDate);
+  const closeLabel = formatDate(registrationClose);
+
+  const feeLabel =
+    Number(fee) > 0
+      ? formatCurrency(fee)
+      : "FREE";
+
+  const action = getAction(status);
 
   return `
     <article
       class="tournament-card"
       data-tournament-id="${escapeHtml(id)}"
     >
+      <div class="tournament-card-inner">
 
-      <div class="tournament-card-top">
+        <div class="tournament-card-top">
+          <span class="tournament-id">
+            ${escapeHtml(id)}
+          </span>
 
-        <span class="tournament-id">
-          ${escapeHtml(id)}
-        </span>
+          <span class="tournament-status ${statusClass}">
+            ${escapeHtml(statusLabel)}
+          </span>
+        </div>
 
-        <span class="status-badge status-open">
-          ${escapeHtml(status)}
-        </span>
+        <h3 class="tournament-name">
+          ${escapeHtml(cleanTournamentName(name))}
+        </h3>
 
-      </div>
+        ${
+          edition
+            ? `
+              <div class="tournament-edition">
+                ${escapeHtml(edition)}
+              </div>
+            `
+            : ""
+        }
 
-
-      <div class="tournament-card-body">
-
-        <h2>
-          ${escapeHtml(name)}
-        </h2>
+        <div class="tournament-divider"></div>
 
         <div class="tournament-meta">
 
-          <div class="meta-item">
-            <span class="meta-label">
-              START
+          <div class="tournament-meta-item">
+            <span class="tournament-meta-label">
+              Registration closes
             </span>
 
-            <span class="meta-value">
-              ${formatDate(
-                tournament.tournament_start_date
-              )}
+            <span class="tournament-meta-value">
+              ${escapeHtml(closeLabel)}
             </span>
           </div>
 
-
-          <div class="meta-item">
-            <span class="meta-label">
-              REGISTRATION CLOSES
+          <div class="tournament-meta-item">
+            <span class="tournament-meta-label">
+              Tournament starts
             </span>
 
-            <span class="meta-value">
-              ${formatDate(
-                tournament.registration_close_datetime
-              )}
+            <span class="tournament-meta-value">
+              ${escapeHtml(startLabel)}
             </span>
           </div>
 
-
-          <div class="meta-item">
-            <span class="meta-label">
-              ENTRY
+          <div class="tournament-meta-item">
+            <span class="tournament-meta-label">
+              Entry
             </span>
 
-            <span class="meta-value">
-              ${formatCurrency(
-                tournament.registration_fee
-              )}
+            <span class="tournament-meta-value">
+              ${escapeHtml(feeLabel)}
             </span>
           </div>
 
-
-          <div class="meta-item">
-            <span class="meta-label">
-              PLAYERS
+          <div class="tournament-meta-item">
+            <span class="tournament-meta-label">
+              Players
             </span>
 
-            <span class="meta-value">
-              ${maximum || "—"}
+            <span class="tournament-meta-value">
+              ${escapeHtml(String(capacity))}
             </span>
           </div>
 
         </div>
 
-      </div>
-
-
-      <div class="tournament-card-footer">
-
         <button
-          class="button button-primary tournament-view-button"
-          data-tournament="${escapeHtml(id)}"
+          type="button"
+          class="tournament-card-action"
+          data-action="open-tournament"
+          data-tournament-id="${escapeHtml(id)}"
         >
-          VIEW TOURNAMENT
+          <span>${escapeHtml(action)}</span>
+          <span class="tournament-card-action-arrow">→</span>
         </button>
 
       </div>
-
     </article>
   `;
-
 }
 
+function cleanTournamentName(name) {
+  return String(name)
+    .replace(/\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*['’]?\d{2,4}$/i, "")
+    .trim();
+}
 
-export function bindTournamentCards() {
+function extractEdition(name) {
+  const match = String(name).match(
+    /((Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s*['’]?\d{2,4})$/i
+  );
 
-  document
-    .querySelectorAll(
-      "[data-tournament]"
-    )
-    .forEach(
-      button => {
+  return match ? match[1] : "";
+}
 
-        button.addEventListener(
-          "click",
-          () => {
+function formatStatus(status) {
+  const normalized = String(status)
+    .trim()
+    .toLowerCase();
 
-            const id =
-              button.dataset.tournament;
+  switch (normalized) {
+    case "registration open":
+      return "Registration Open";
 
-            if (!id) {
-              return;
-            }
+    case "live":
+      return "Live";
 
-            navigate(
-              `/tournament/${encodeURIComponent(id)}`
-            );
+    case "completed":
+      return "Completed";
 
-          }
-        );
+    case "upcoming":
+      return "Upcoming";
 
-      }
-    );
+    default:
+      return String(status);
+  }
+}
 
+function getStatusClass(status) {
+  const normalized = String(status)
+    .trim()
+    .toLowerCase();
+
+  if (normalized.includes("registration")) {
+    return "status-live";
+  }
+
+  if (normalized.includes("live")) {
+    return "status-live";
+  }
+
+  if (normalized.includes("completed")) {
+    return "status-completed";
+  }
+
+  return "status-upcoming";
+}
+
+function getAction(status) {
+  const normalized = String(status)
+    .trim()
+    .toLowerCase();
+
+  if (normalized === "registration open") {
+    return "Enter Tournament";
+  }
+
+  if (normalized === "live") {
+    return "View Matchday";
+  }
+
+  if (normalized === "completed") {
+    return "View Results";
+  }
+
+  return "View Tournament";
+}
+
+function formatDate(value) {
+  if (!value) {
+    return "TBA";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return new Intl.DateTimeFormat("en-NG", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric"
+  }).format(date);
+}
+
+function formatCurrency(value) {
+  return new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0
+  }).format(Number(value));
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
