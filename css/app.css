@@ -594,23 +594,14 @@ img {
 
   text-align: center;
 }
-
-.loading-mark {
+.loading-logo {
   width: 58px;
   height: 58px;
 
-  display: grid;
-  place-items: center;
+  object-fit: cover;
 
-  border: 1px solid var(--ktms-primary);
-
-  color: var(--ktms-primary);
-
-  font-size: 16px;
-  font-weight: 950;
-  letter-spacing: 0.05em;
-
-  transform: skew(-8deg);
+  border: 1px solid rgba(0, 217, 255, 0.35);
+  border-radius: 6px;
 
   box-shadow:
     0 0 28px rgba(0, 217, 255, 0.15);
