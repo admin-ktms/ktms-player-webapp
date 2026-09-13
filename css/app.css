@@ -172,23 +172,20 @@ img {
   text-transform: uppercase;
 }
 
-.brand-mark {
-  width: 30px;
-  height: 30px;
+.brand-logo {
+  width: 34px;
+  height: 34px;
 
-  display: grid;
-  place-items: center;
+  display: block;
 
-  border: 1px solid var(--ktms-primary);
-  color: var(--ktms-primary);
+  object-fit: cover;
 
-  font-size: 11px;
-  font-weight: 900;
+  border: 1px solid rgba(0, 217, 255, 0.35);
 
-  transform: skew(-8deg);
+  border-radius: 4px;
 
   box-shadow:
-    0 0 18px rgba(0, 217, 255, 0.12);
+    0 0 18px rgba(0, 217, 255, 0.10);
 }
 
 .brand-text {
