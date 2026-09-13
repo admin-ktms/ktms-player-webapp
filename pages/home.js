@@ -15,15 +15,19 @@ export async function renderHome() {
             class="brand"
             data-route="/"
           >
-            <span class="brand-mark">KD</span>
-
+            <img
+              class="brand-logo"
+              src="https://kickoffdls.com/wp-content/uploads/2026/08/cropped-107743.jpg"
+              alt="KickOff DLS"
+            >
+          
             <span>
               <span class="brand-text">
                 KickOff DLS
               </span>
-
+          
               <span class="brand-subtitle">
-                Competitive Football
+                The Ultimate DREAM LEAGUE SOCCER Showdown
               </span>
             </span>
           </a>
