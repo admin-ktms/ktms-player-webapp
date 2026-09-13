@@ -1,36 +1,19 @@
-const API_VERSION =
-  "v1";
-
-
-/*
- * IMPORTANT:
- *
- * This is the deployed KTMS Public API Web App URL.
- *
- * Do NOT place KTMS_API_KEY here. 
- */
-const API_BASE_URL =
-  "https://api.kickoffdls.com/";
+import { CONFIG } from "./config.js";
 
 
 export class ApiError extends Error {
 
   constructor(
     message,
-    code = "UNKNOWN_ERROR",
-    response = null
+    code = "API_ERROR",
+    status = 0
   ) {
 
     super(message);
 
-    this.name =
-      "ApiError";
-
-    this.code =
-      code;
-
-    this.response =
-      response;
+    this.name = "ApiError";
+    this.code = code;
+    this.status = status;
 
   }
 
@@ -38,78 +21,68 @@ export class ApiError extends Error {
 
 
 async function request(
-  endpoint,
-  payload = {},
-  options = {}
+  action,
+  payload = {}
 ) {
 
-  const body = {
+  let response;
 
-    endpoint,
+  try {
 
-    ...payload
-
-  };
-
-
-  const response =
-    await fetch(
-      API_BASE_URL,
+    response = await fetch(
+      CONFIG.API_BASE_URL,
       {
-
-        method:
-          "POST",
+        method: "POST",
 
         headers: {
-
-          "Content-Type":
-            "application/json"
-
+          "Content-Type": "application/json"
         },
 
-        credentials:
-          "include",
+        credentials: "include",
 
-        body:
-          JSON.stringify(
-            body
-          ),
-
-        signal:
-          options.signal
-
+        body: JSON.stringify({
+          action,
+          ...payload
+        })
       }
     );
+
+  } catch (error) {
+
+    throw new ApiError(
+      "Unable to connect to KTMS.",
+      "NETWORK_ERROR"
+    );
+
+  }
 
 
   let data;
 
-
   try {
 
-    data =
-      await response.json();
+    data = await response.json();
 
   } catch (error) {
 
     throw new ApiError(
       "KTMS returned an invalid response.",
-      "INVALID_API_RESPONSE"
+      "INVALID_API_RESPONSE",
+      response.status
     );
 
   }
 
 
   if (
-    !data ||
-    data.apiVersion !==
-      API_VERSION
+    data?.apiVersion !==
+    CONFIG.API_VERSION
   ) {
 
     throw new ApiError(
-      "KTMS returned an unsupported API version.",
+      "Unsupported KTMS API version.",
       "UNSUPPORTED_API_VERSION",
-      data
+      response.status
     );
 
   }
@@ -122,13 +95,12 @@ async function request(
 
     throw new ApiError(
       data?.error?.message ||
-        "The KTMS request could not be completed.",
+      "The KTMS request could not be completed.",
 
       data?.error?.code ||
-        "API_REQUEST_FAILED",
+      "API_REQUEST_FAILED",
 
-      data
-
+      response.status
     );
 
   }
@@ -140,44 +112,47 @@ async function request(
 
 
 /* ==========================================================
- * PUBLIC API
- * ======================================================== */
+   PUBLIC TOURNAMENT API
+========================================================== */
 
-async function getOpenTournaments() {
-
-  return request(
-    "tournaments/open"
-  );
-
-}
-
-
-/* ==========================================================
- * ACCOUNT
- * ======================================================== */
-
-async function requestAccountVerification(
-  payload
+async function getTournaments(
+  status = null
 ) {
 
   return request(
-    "account/verification/request",
-    payload
+    "tournaments.list",
+    status
+      ? { status }
+      : {}
+  );
+
+}
+
+
+async function getTournament(
+  tournamentId
+) {
+
+  return request(
+    "tournament.get",
+    {
+      tournamentId
+    }
   );
 
 }
 
 
 /* ==========================================================
- * AUTHENTICATION
- * ======================================================== */
+   AUTHENTICATION
+========================================================== */
 
 async function requestLoginCode(
   accountId
 ) {
 
   return request(
-    "auth/otp/request",
+    "auth.otp.request",
     {
       accountId
     }
@@ -192,13 +167,10 @@ async function verifyOtp(
 ) {
 
   return request(
-    "auth/otp/verify",
+    "auth.otp.verify",
     {
-
       challengeId,
-
       otp
-
     }
   );
 
@@ -206,54 +178,65 @@ async function verifyOtp(
 
 
 async function validateSession(
-  sessionToken
+  sessionToken = null
 ) {
 
   return request(
-    "auth/session/validate",
-    {
-
-      sessionToken
-
-    }
+    "auth.session.validate",
+    sessionToken
+      ? { sessionToken }
+      : {}
   );
 
 }
 
 
 async function logout(
-  sessionToken
+  sessionToken = null
 ) {
 
   return request(
-    "auth/logout",
-    {
-
-      sessionToken
-
-    }
+    "auth.logout",
+    sessionToken
+      ? { sessionToken }
+      : {}
   );
 
 }
 
 
 /* ==========================================================
- * EXPORT
- * ======================================================== */
+   REGISTRATION
+========================================================== */
 
-export const api =
-  Object.freeze({
+async function createRegistration(
+  tournamentId,
+  squadName,
+  age
+) {
 
-    getOpenTournaments,
+  return request(
+    "registration.create",
+    {
+      tournamentId,
+      squadName,
+      age
+    }
+  );
 
-    requestAccountVerification,
+}
 
-    requestLoginCode,
 
-    verifyOtp,
+export const api = Object.freeze({
 
-    validateSession,
+  getTournaments,
+  getTournament,
 
-    logout
+  requestLoginCode,
+  verifyOtp,
+  validateSession,
+  logout,
 
-  });
+  createRegistration
+
+});
