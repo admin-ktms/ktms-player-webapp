@@ -1,14 +1,18 @@
-const CACHE_NAME = "ktms-shell-v1";
+const CACHE_NAME =
+  "ktms-player-v1";
 
-const SHELL_ASSETS = [
+
+const STATIC_ASSETS = [
   "/",
   "/index.html",
   "/css/app.css",
   "/css/components.css",
+  "/css/responsive.css",
   "/js/app.js",
-  "/js/router.js",
   "/js/api.js",
   "/js/auth.js",
+  "/js/config.js",
+  "/js/router.js",
   "/js/state.js",
   "/js/ui.js"
 ];
@@ -25,13 +29,11 @@ self.addEventListener(
         .then(
           cache =>
             cache.addAll(
-              SHELL_ASSETS
+              STATIC_ASSETS
             )
         )
 
     );
-
-    self.skipWaiting();
 
   }
 );
@@ -55,17 +57,12 @@ self.addEventListener(
                 )
                 .map(
                   key =>
-                    caches.delete(
-                      key
-                    )
+                    caches.delete(key)
                 )
             )
-
         )
 
     );
-
-    self.clients.claim();
 
   }
 );
@@ -75,37 +72,26 @@ self.addEventListener(
   "fetch",
   event => {
 
-    const request =
-      event.request;
-
-
     if (
-      request.method !== "GET"
+      event.request.method !==
+      "GET"
     ) {
+
       return;
-    }
 
-
-    const url =
-      new URL(
-        request.url
-      );
-
-
-    if (
-      url.origin !==
-      self.location.origin
-    ) {
-      return;
     }
 
 
     event.respondWith(
 
-      fetch(request)
+      fetch(
+        event.request
+      )
         .catch(
           () =>
-            caches.match(request)
+            caches.match(
+              event.request
+            )
         )
 
     );
