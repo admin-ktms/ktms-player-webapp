@@ -284,10 +284,10 @@ function bindTournamentActions() {
             return;
           }
 
-          window.location.href =
-            `/tournament?id=${encodeURIComponent(
-              tournamentId
-            )}`;
+         window.location.href =
+          `/tournament/${encodeURIComponent(
+            tournamentId
+          )}`;
         }
       );
     });
