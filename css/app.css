@@ -503,3 +503,65 @@ img {
 .uppercase {
   text-transform: uppercase;
 }
+
+/* ----------------------------------
+   INITIAL APP LOADING
+---------------------------------- */
+
+.app-loading {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background: #080A0F;
+
+  text-align: center;
+}
+
+.loading-mark {
+  width: 58px;
+  height: 58px;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid var(--ktms-primary);
+
+  color: var(--ktms-primary);
+
+  font-size: 16px;
+  font-weight: 950;
+  letter-spacing: 0.05em;
+
+  transform: skew(-8deg);
+
+  box-shadow:
+    0 0 28px rgba(0, 217, 255, 0.15);
+}
+
+.loading-brand {
+  margin-top: 16px;
+
+  color: var(--ktms-text);
+
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+}
+
+.loading-text {
+  margin-top: 7px;
+
+  color: var(--ktms-muted);
+
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
