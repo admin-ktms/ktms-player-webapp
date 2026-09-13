@@ -68,9 +68,8 @@ export async function renderHome() {
         
             <p class="page-lead">
               Find your next tournament, enter your squad,
-              and compete in structured Dream League Soccer
-              competition, beat your opponent and win real prizes.
-              KickOff DLS was built for you.
+              and compete against the best DLS players,
+              and win real prizes and recognition.
             </p>
         
             <div class="hero-actions">
