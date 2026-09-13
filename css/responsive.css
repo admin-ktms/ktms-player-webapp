@@ -1,1 +1,73 @@
 
+@media (
+  max-width: 600px
+) {
+
+  .page {
+
+    width:
+      min(
+        100% - 20px,
+        var(--content-width)
+      );
+
+    padding-top:
+      20px;
+
+  }
+
+
+  .hero-content {
+
+    width:
+      min(
+        100% - 20px,
+        var(--content-width)
+      );
+
+    padding:
+      52px 0 40px;
+
+  }
+
+
+  .tournament-section {
+
+    width:
+      min(
+        100% - 20px,
+        var(--content-width)
+      );
+
+    padding-top:
+      32px;
+
+  }
+
+
+  .tournament-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .detail-grid {
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .auth-card,
+  .state-card,
+  .tournament-detail {
+
+    padding:
+      20px;
+
+  }
+
+}
