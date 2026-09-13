@@ -266,12 +266,13 @@ img {
 }
 
 /* ----------------------------------
-   HERO
+   HOME HERO
 ---------------------------------- */
 
 .hero {
   position: relative;
-  min-height: 420px;
+
+  min-height: 500px;
 
   display: flex;
   align-items: center;
@@ -281,30 +282,97 @@ img {
   border-bottom: 1px solid var(--ktms-border);
 }
 
+.hero-background {
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(8, 10, 15, 0.98) 0%,
+      rgba(8, 10, 15, 0.90) 38%,
+      rgba(8, 10, 15, 0.72) 68%,
+      rgba(8, 10, 15, 0.92) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(8, 10, 15, 0.35) 0%,
+      rgba(8, 10, 15, 0.80) 100%
+    ),
+    url("https://kickoffdls.com/wp-content/uploads/2026/08/cropped-107743.jpg");
+
+  background-position:
+    center,
+    center,
+    center;
+
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    no-repeat;
+
+  background-size:
+    cover,
+    cover,
+    cover;
+
+  opacity: 0.32;
+
+  transform: scale(1.04);
+
+  filter:
+    saturate(0.8)
+    contrast(1.05);
+
+  pointer-events: none;
+}
+
 .hero::before {
   content: "";
+
   position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(0, 217, 255, 0.035) 48%,
+      rgba(0, 217, 255, 0.08) 49%,
+      transparent 50%
+    );
+
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+
+  position: absolute;
+
   top: 0;
-  right: -12%;
-  width: 60%;
+  right: -10%;
+
+  width: 50%;
   height: 100%;
 
   background:
     linear-gradient(
-      135deg,
-      transparent 35%,
-      rgba(0, 217, 255, 0.055) 35%,
-      rgba(0, 217, 255, 0.055) 36%,
-      transparent 36%
+      120deg,
+      transparent 40%,
+      rgba(0, 217, 255, 0.045) 41%,
+      rgba(0, 217, 255, 0.045) 42%,
+      transparent 43%
     );
 
   transform: skewX(-12deg);
+
   pointer-events: none;
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 
   max-width: 760px;
 }
