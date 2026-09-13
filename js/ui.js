@@ -1,6 +1,10 @@
-export function escapeHtml(value) {
+export function escapeHtml(
+  value
+) {
 
-  return String(value ?? "")
+  return String(
+    value ?? ""
+  )
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -10,209 +14,105 @@ export function escapeHtml(value) {
 }
 
 
-export function renderLoading(
-  message = "Loading..."
+export function formatDate(
+  value
 ) {
 
-  return `
-    <section
-      class="loading-state"
-      aria-live="polite"
-    >
-      <div>
-        <div
-          class="loading-spinner"
-          aria-hidden="true"
-        ></div>
+  if (!value) {
+    return "—";
+  }
 
-        <div>${escapeHtml(message)}</div>
-      </div>
-    </section>
-  `;
+  const date =
+    new Date(value);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
+    return "—";
+
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-NG",
+    {
+      day: "numeric",
+      month: "short",
+      year: "numeric"
+    }
+  ).format(date);
 
 }
 
 
-export function renderError(
-  message
+export function formatCurrency(
+  value
 ) {
 
-  return `
-    <section
-      class="alert alert-error"
-      role="alert"
-    >
-      ${escapeHtml(message)}
-    </section>
-  `;
+  const amount =
+    Number(value);
+
+  if (
+    Number.isNaN(amount)
+  ) {
+
+    return "—";
+
+  }
+
+  return new Intl.NumberFormat(
+    "en-NG",
+    {
+      style: "currency",
+      currency: "NGN",
+      maximumFractionDigits: 0
+    }
+  ).format(amount);
 
 }
 
 
-export function showToast(
-  message
+export function setPage(
+  html
 ) {
 
-  const container =
-    document.getElementById(
-      "toast-container"
-    );
+  const app =
+    document.querySelector("#app");
 
-
-  if (!container) {
+  if (!app) {
     return;
   }
 
-
-  const toast =
-    document.createElement("div");
-
-
-  toast.className =
-    "toast";
-
-
-  toast.textContent =
-    message;
-
-
-  container.appendChild(
-    toast
-  );
-
-
-  window.setTimeout(
-    () => {
-
-      toast.remove();
-
-    },
-    3500
-  );
+  app.innerHTML = html;
 
 }
 
 
-export function showModal({
-  title,
-  message,
-  actions = []
-}) {
+export function showError(
+  message
+) {
 
-  const root =
-    document.getElementById(
-      "modal-root"
-    );
+  setPage(`
+    <main class="page page-centered">
+      <section class="state-card">
+        <div class="state-icon">!</div>
 
-
-  if (!root) {
-    return;
-  }
-
-
-  const actionHtml =
-    actions
-      .map(
-        (
-          action,
-          index
-        ) => `
-          <button
-            type="button"
-            class="button ${
-              action.primary
-                ? "button-primary"
-                : ""
-            }"
-            data-modal-action="${index}"
-          >
-            ${escapeHtml(action.label)}
-          </button>
-        `
-      )
-      .join("");
-
-
-  root.innerHTML = `
-
-    <div
-      class="modal-backdrop"
-      role="presentation"
-    >
-
-      <section
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-title"
-      >
-
-        <h2 id="modal-title">
-          ${escapeHtml(title)}
-        </h2>
+        <h1>Something went wrong</h1>
 
         <p>
           ${escapeHtml(message)}
         </p>
 
-        <div class="modal-actions">
-          ${actionHtml}
-        </div>
-
+        <button
+          class="button button-primary"
+          data-action="reload"
+        >
+          TRY AGAIN
+        </button>
       </section>
-
-    </div>
-
-  `;
-
-
-  root
-    .querySelectorAll(
-      "[data-modal-action]"
-    )
-    .forEach(
-      button => {
-
-        const index =
-          Number(
-            button.dataset.modalAction
-          );
-
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            const action =
-              actions[index];
-
-
-            if (action?.handler) {
-              action.handler();
-            }
-
-
-            closeModal();
-
-          }
-        );
-
-      }
-    );
-
-}
-
-
-export function closeModal() {
-
-  const root =
-    document.getElementById(
-      "modal-root"
-    );
-
-
-  if (root) {
-    root.innerHTML = "";
-  }
+    </main>
+  `);
 
 }
