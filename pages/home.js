@@ -47,35 +47,41 @@ export async function renderHome() {
 
       <main class="app-main">
 
-        <section class="hero">
-
+                <section class="hero">
+        
+          <div
+            class="hero-background"
+            aria-hidden="true"
+          ></div>
+        
           <div class="hero-content">
-
+        
             <div class="eyebrow">
               KickOff DLS
             </div>
-
+        
             <h1 class="hero-title">
               The competition
               <br>
               <span>is on.</span>
             </h1>
-
+        
             <p class="page-lead">
               Find your next tournament, enter your squad,
               and compete in structured Dream League Soccer
-              competition built for players looking for more.
+              competition, beat your opponent and win real prizes.
+              KickOff DLS was built for you.
             </p>
-
+        
             <div class="hero-actions">
-
+        
               <a
                 href="#active-tournaments"
                 class="btn btn-primary"
               >
                 Explore Tournaments
               </a>
-
+        
               <a
                 href="/login"
                 class="btn btn-secondary"
@@ -83,11 +89,11 @@ export async function renderHome() {
               >
                 Player Login
               </a>
-
+        
             </div>
-
+        
           </div>
-
+        
         </section>
 
         <section
