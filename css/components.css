@@ -1,286 +1,364 @@
-.page {
-  animation: page-enter 180ms ease;
-}
+.button {
 
+  display:
+    inline-flex;
 
-@keyframes page-enter {
+  justify-content:
+    center;
 
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
+  align-items:
+    center;
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-}
-
-
-.page-header {
-  margin-bottom: 28px;
-}
-
-
-.page-title {
-  margin: 0;
-
-  color: var(--ktms-foreground);
-
-  font-size: clamp(
-    28px,
-    5vw,
-    42px
-  );
-
-  line-height: 1.1;
-}
-
-
-.page-description {
-  max-width: 680px;
-
-  margin:
-    12px
-    0
-    0;
-
-  color: var(--ktms-secondary);
-
-  font-size: 16px;
-}
-
-
-.card {
-  padding: 20px;
-
-  border: 1px solid var(--ktms-border);
-  border-radius: var(--radius-medium);
-
-  background: var(--ktms-secondary-background);
-}
-
-
-.card-title {
-  margin: 0 0 8px;
-
-  color: var(--ktms-foreground);
-
-  font-size: 18px;
-}
-
-
-.card-text {
-  margin: 0;
-
-  color: var(--ktms-secondary);
-}
-
-
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-
-  min-height: 28px;
+  min-height:
+    44px;
 
   padding:
-    4px
-    10px;
-
-  border: 1px solid var(--ktms-border);
-  border-radius: 999px;
-
-  color: var(--ktms-secondary);
-
-  font-size: 11px;
-  font-weight: 800;
-
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-
-.status-pill-primary {
-  border-color: rgba(0, 217, 255, 0.35);
-
-  background: rgba(0, 217, 255, 0.08);
-
-  color: var(--ktms-primary);
-}
-
-
-.status-pill-gold {
-  border-color: rgba(255, 200, 87, 0.35);
-
-  background: rgba(255, 200, 87, 0.08);
-
-  color: var(--ktms-tertiary);
-}
-
-
-.loading-state {
-  display: grid;
-  place-items: center;
-
-  min-height: 240px;
-
-  color: var(--ktms-secondary);
-}
-
-
-.loading-spinner {
-  width: 30px;
-  height: 30px;
-
-  margin-bottom: 12px;
+    0 18px;
 
   border:
-    3px solid
-    var(--ktms-border);
+    1px solid transparent;
 
-  border-top-color:
-    var(--ktms-primary);
+  border-radius:
+    var(--radius-sm);
 
-  border-radius: 50%;
+  font-size:
+    0.78rem;
 
-  animation:
-    loading-spin
-    700ms
-    linear
-    infinite;
-}
+  font-weight:
+    800;
 
-
-@keyframes loading-spin {
-
-  to {
-    transform: rotate(360deg);
-  }
+  letter-spacing:
+    0.04em;
 
 }
 
 
-.alert {
-  padding: 14px 16px;
+.button-primary {
 
-  border: 1px solid var(--ktms-border);
-  border-radius: var(--radius-small);
+  background:
+    var(--primary);
 
-  background: var(--ktms-secondary-background);
-
-  color: var(--ktms-body-text);
-}
-
-
-.alert-error {
-  border-color: rgba(255, 80, 80, 0.35);
-}
-
-
-.alert-success {
-  border-color: rgba(0, 217, 255, 0.35);
-}
-
-
-.toast-container {
-  position: fixed;
-
-  right: 20px;
-  bottom: 20px;
-
-  z-index: 500;
-
-  display: grid;
-  gap: 10px;
-
-  width: min(
-    360px,
-    calc(100vw - 40px)
-  );
-}
-
-
-.toast {
-  padding: 14px 16px;
-
-  border: 1px solid var(--ktms-border);
-  border-radius: var(--radius-small);
-
-  background: var(--ktms-secondary-background);
-
-  color: var(--ktms-foreground);
-
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.35);
-
-  animation: toast-enter 180ms ease;
-}
-
-
-@keyframes toast-enter {
-
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  color:
+    #080A0F;
 
 }
 
 
-.modal-root {
-  position: relative;
-  z-index: 1000;
+.button-secondary {
+
+  background:
+    transparent;
+
+  border-color:
+    var(--border);
+
+  color:
+    var(--foreground);
+
 }
 
 
-.modal-backdrop {
-  position: fixed;
+.button-large {
 
-  inset: 0;
+  width:
+    100%;
 
-  display: grid;
-  place-items: center;
+  min-height:
+    50px;
 
-  padding: 20px;
-
-  background: rgba(0, 0, 0, 0.72);
 }
 
 
-.modal {
-  width: min(
-    460px,
-    100%
-  );
+.button:disabled {
 
-  padding: 24px;
+  opacity:
+    0.5;
 
-  border: 1px solid var(--ktms-border);
-  border-radius: var(--radius-large);
+  cursor:
+    not-allowed;
 
-  background: var(--ktms-secondary-background);
-
-  box-shadow:
-    0 30px 100px rgba(0, 0, 0, 0.55);
 }
 
 
-.modal h2 {
-  margin-top: 0;
+.tournament-card {
+
+  background:
+    var(--secondary-bg);
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius-md);
+
+  overflow:
+    hidden;
+
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+
 }
 
 
-.modal-actions {
-  display: flex;
-  justify-content: flex-end;
+.tournament-card:hover {
 
-  gap: 10px;
+  border-color:
+    rgba(
+      0,
+      217,
+      255,
+      0.55
+    );
 
-  margin-top: 24px;
+  transform:
+    translateY(-2px);
+
+}
+
+
+.tournament-card-top {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  gap:
+    10px;
+
+  padding:
+    14px 16px;
+
+  border-bottom:
+    1px solid var(--border);
+
+}
+
+
+.tournament-id {
+
+  color:
+    var(--primary);
+
+  font-size:
+    0.75rem;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    0.08em;
+
+}
+
+
+.status-badge {
+
+  display:
+    inline-flex;
+
+  padding:
+    5px 8px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    999px;
+
+  font-size:
+    0.65rem;
+
+  font-weight:
+    800;
+
+  text-transform:
+    uppercase;
+
+}
+
+
+.status-open {
+
+  color:
+    var(--primary);
+
+  border-color:
+    rgba(
+      0,
+      217,
+      255,
+      0.3
+    );
+
+}
+
+
+.tournament-card-body {
+
+  padding:
+    18px 16px;
+
+}
+
+
+.tournament-card h2 {
+
+  margin:
+    0 0 18px;
+
+  font-size:
+    1.2rem;
+
+}
+
+
+.tournament-meta {
+
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap:
+    14px;
+
+}
+
+
+.meta-item {
+
+  display:
+    grid;
+
+  gap:
+    3px;
+
+}
+
+
+.meta-label {
+
+  color:
+    var(--secondary);
+
+  font-size:
+    0.62rem;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    0.08em;
+
+}
+
+
+.meta-value {
+
+  font-size:
+    0.85rem;
+
+}
+
+
+.tournament-card-footer {
+
+  padding:
+    14px 16px;
+
+  border-top:
+    1px solid var(--border);
+
+}
+
+
+.tournament-card-footer .button {
+
+  width:
+    100%;
+
+}
+
+
+.loading-card {
+
+  padding:
+    32px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius-md);
+
+  color:
+    var(--secondary);
+
+}
+
+
+.state-card {
+
+  text-align:
+    center;
+
+}
+
+
+.state-icon {
+
+  display:
+    inline-grid;
+
+  place-items:
+    center;
+
+  width:
+    48px;
+
+  height:
+    48px;
+
+  margin-bottom:
+    12px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    50%;
+
+  color:
+    var(--primary);
+
+  font-weight:
+    900;
+
+}
+
+
+.notice {
+
+  padding:
+    14px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius:
+    var(--radius-sm);
+
+  color:
+    var(--secondary);
+
+  text-align:
+    center;
+
 }
