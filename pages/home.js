@@ -199,9 +199,7 @@ async function loadTournaments() {
     document.querySelector("#tournament-list");
 
   try {
-    const response = await api(
-      "tournaments.list",
-      {}
+    const response = await api.getTournaments(
     );
 
     const tournaments =
