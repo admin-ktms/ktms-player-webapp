@@ -682,3 +682,16 @@ img {
 .app-footer-link:hover {
   color: var(--ktms-primary);
 }
+
+.app-header-nav {
+  gap: 6px;
+}
+
+.app-nav-link {
+  display: none;
+}
+
+.app-header-nav .btn {
+  min-height: 38px;
+  padding: 0 12px;
+}
