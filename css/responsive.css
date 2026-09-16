@@ -134,3 +134,64 @@
     display: none !important;
   }
 }
+
+/* ==========================================================
+   PLAYER APP SHELL — MOBILE
+========================================================== */
+
+.app-header-nav {
+  display: none;
+}
+
+.app-mobile-menu-button {
+  display: block;
+}
+
+.app-mobile-navigation {
+  display: block;
+}
+
+.app-bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 90;
+
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  min-height: 58px;
+
+  background: var(--ktms-surface);
+  border-top: 1px solid var(--ktms-border);
+}
+
+.app-bottom-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 0;
+
+  color: var(--ktms-muted);
+  text-decoration: none;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.app-bottom-nav-link.active {
+  color: var(--ktms-primary);
+}
+
+.app-footer {
+  padding-bottom: 76px;
+}
+
+.app-footer-navigation {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
